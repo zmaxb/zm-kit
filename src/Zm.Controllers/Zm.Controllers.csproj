@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Zm.Controllers</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="14.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.1.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Zm.Common\Zm.Common.csproj" />
+      <ProjectReference Include="..\Zm.Logging\Zm.Logging.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zm.Common", "src\Zm.Common\Zm.Common.csproj", "{72AC57CE-2497-4598-BA17-2942C06B448E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zm.Controllers", "src\Zm.Controllers\Zm.Controllers.csproj", "{8138F424-CF12-4D56-9B87-705FBB6315DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zm.Logging", "src\Zm.Logging\Zm.Logging.csproj", "{691B944C-4CE1-4E19-85F6-9B2964A82C74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zm.ServiceClient", "src\Zm.ServiceClient\Zm.ServiceClient.csproj", "{73709ED3-7A3C-4967-9CC9-548DB20B155E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72AC57CE-2497-4598-BA17-2942C06B448E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72AC57CE-2497-4598-BA17-2942C06B448E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72AC57CE-2497-4598-BA17-2942C06B448E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72AC57CE-2497-4598-BA17-2942C06B448E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8138F424-CF12-4D56-9B87-705FBB6315DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8138F424-CF12-4D56-9B87-705FBB6315DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8138F424-CF12-4D56-9B87-705FBB6315DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8138F424-CF12-4D56-9B87-705FBB6315DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{691B944C-4CE1-4E19-85F6-9B2964A82C74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{691B944C-4CE1-4E19-85F6-9B2964A82C74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{691B944C-4CE1-4E19-85F6-9B2964A82C74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{691B944C-4CE1-4E19-85F6-9B2964A82C74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73709ED3-7A3C-4967-9CC9-548DB20B155E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73709ED3-7A3C-4967-9CC9-548DB20B155E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73709ED3-7A3C-4967-9CC9-548DB20B155E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73709ED3-7A3C-4967-9CC9-548DB20B155E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
