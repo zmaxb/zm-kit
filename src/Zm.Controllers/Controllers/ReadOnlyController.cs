@@ -40,13 +40,13 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
     {
         var paging = new PagingParameters(request.Page, request.PageSize);
 
-        var filter = !string.IsNullOrWhiteSpace(request.Search) && _searchBuilder != null
-            ? _searchBuilder(request.Search)
-            : null;
+        var (filter, sort) = PagedQueryBuilder.Build(
+            request,
+            _searchBuilder,
+            _sortBuilder
+        );
         
-        filter = request.Filters.ApplyDynamicFilters<TEntity>(filter);
-
-        var sort = _sortBuilder?.Invoke(request.SortBy, request.Descending);
+        filter = request.Filters.ApplyDynamicFilters(filter);
 
         var (items, totalCount) = await ReadOnlyService.GetPagedAsync(paging, filter, sort);
 
@@ -54,7 +54,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
         {
             Items = items.ToList()
         };
-        
+
         return ApiResponse<PaginationInfo<TReadDto>>.Ok(paginationInfo);
     }
 
