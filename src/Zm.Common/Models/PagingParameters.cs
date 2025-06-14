@@ -1,5 +1,5 @@
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
-namespace D3us.Common.Models;
+namespace Zm.Common.Models;
 
 public struct PagingParameters(int page, int pageSize)
 {

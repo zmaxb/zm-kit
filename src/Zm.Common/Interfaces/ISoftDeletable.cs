@@ -1,4 +1,4 @@
-namespace D3us.Common.Interfaces.Repositories;
+namespace Zm.Common.Interfaces;
 
 // ReSharper disable once TypeParameterCanBeVariant
 public interface ISoftDeletable<TKey>
