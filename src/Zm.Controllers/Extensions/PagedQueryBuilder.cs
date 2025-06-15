@@ -23,17 +23,58 @@ public static class PagedQueryBuilder
             }
             else
             {
-                var param = Expression.Parameter(typeof(TEntity), "x");
+                var searchParam = Expression.Parameter(typeof(TEntity), "x");
                 var prop = typeof(TEntity).GetProperties()
                     .FirstOrDefault(p => p.PropertyType == typeof(string));
 
                 if (prop != null)
                 {
-                    var propAccess = Expression.Property(param, prop);
+                    var propAccess = Expression.Property(searchParam, prop);
                     var search = Expression.Constant(request.Search);
                     var containsMethod = typeof(string).GetMethod(nameof(string.Contains), [typeof(string)])!;
                     var body = Expression.Call(propAccess, containsMethod, search);
-                    filter = Expression.Lambda<Func<TEntity, bool>>(body, param);
+                    filter = Expression.Lambda<Func<TEntity, bool>>(body, searchParam);
+                }
+            }
+        }
+
+        if (request.Filters is { Count: > 0 })
+        {
+            var filterParam = Expression.Parameter(typeof(TEntity), "x");
+            Expression? filtersExpr = null;
+
+            // ReSharper disable once ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
+            foreach (var kv in request.Filters)
+            {
+                var prop = typeof(TEntity).GetProperty(kv.Key,
+                    BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                if (prop is null)
+                    continue;
+
+                var value = ConvertToPropertyType(kv.Value, prop.PropertyType);
+
+                var left = Expression.Property(filterParam, prop);
+                var right = Expression.Constant(value, prop.PropertyType);
+                var equalExpr = Expression.Equal(left, right);
+
+                filtersExpr = filtersExpr is null ? equalExpr : Expression.AndAlso(filtersExpr, equalExpr);
+            }
+
+            if (filtersExpr is not null)
+            {
+                var filtersLambda = Expression.Lambda<Func<TEntity, bool>>(filtersExpr, filterParam);
+
+                if (filter is null)
+                {
+                    filter = filtersLambda;
+                }
+                else
+                {
+                    var combinedParam = Expression.Parameter(typeof(TEntity), "x");
+                    var invokedExpr1 = Expression.Invoke(filter, combinedParam);
+                    var invokedExpr2 = Expression.Invoke(filtersLambda, combinedParam);
+                    var combined = Expression.AndAlso(invokedExpr1, invokedExpr2);
+                    filter = Expression.Lambda<Func<TEntity, bool>>(combined, combinedParam);
                 }
             }
         }
@@ -51,9 +92,9 @@ public static class PagedQueryBuilder
 
             if (prop == null) return (filter, sort);
             
-            var param = Expression.Parameter(typeof(TEntity), "x");
-            var body = Expression.Property(param, prop);
-            var lambda = Expression.Lambda(body, param);
+            var sortParam = Expression.Parameter(typeof(TEntity), "x");
+            var body = Expression.Property(sortParam, prop);
+            var lambda = Expression.Lambda(body, sortParam);
 
             sort = q =>
             {
@@ -69,5 +110,22 @@ public static class PagedQueryBuilder
         }
 
         return (filter, sort);
+    }
+
+    private static object ConvertToPropertyType(object input, Type targetType)
+    {
+        try
+        {
+            var type = Nullable.GetUnderlyingType(targetType) ?? targetType;
+
+            if (input is string str && type == typeof(bool))
+                return bool.Parse(str);
+
+            return Convert.ChangeType(input, type);
+        }
+        catch
+        {
+            return Activator.CreateInstance(targetType)!;
+        }
     }
 }
