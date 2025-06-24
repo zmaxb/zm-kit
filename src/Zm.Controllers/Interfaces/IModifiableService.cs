@@ -1,4 +1,5 @@
 // ReSharper disable TypeParameterCanBeVariant
+
 namespace Zm.Controllers.Interfaces;
 
 public interface IModifiableService<TCreateDto, TUpdateDto, TKey>

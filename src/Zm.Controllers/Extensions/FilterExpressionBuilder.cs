@@ -25,9 +25,7 @@ public static class FilterExpressionBuilder
                 if (value is JsonElement json)
                 {
                     if (propInfo.PropertyType.IsEnum)
-                    {
-                        typedValue = Enum.Parse(propInfo.PropertyType, json.GetString()!, ignoreCase: true);
-                    }
+                        typedValue = Enum.Parse(propInfo.PropertyType, json.GetString()!, true);
                     else if (propInfo.PropertyType == typeof(string))
                         typedValue = json.GetString();
                     else if (propInfo.PropertyType == typeof(int))

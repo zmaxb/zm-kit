@@ -1,4 +1,5 @@
 // ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+
 namespace Zm.Common.Models;
 
 public class PagedRequest
@@ -8,6 +9,6 @@ public class PagedRequest
     public string? Search { get; set; }
     public string? SortBy { get; set; }
     public bool Descending { get; set; }
-    
+
     public Dictionary<string, object>? Filters { get; set; } = new();
 }

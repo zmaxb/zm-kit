@@ -123,7 +123,9 @@ public class JsonApiClient(HttpClient httpClient, string baseUrl, IApiLogger? lo
     }
 
     private string CombineUrl(string url)
-        => $"{_baseUrl.TrimEnd('/')}/{url.TrimStart('/')}";
+    {
+        return $"{_baseUrl.TrimEnd('/')}/{url.TrimStart('/')}";
+    }
 
     private string? SafeSerialize<T>(T? data, CancellationToken cancellationToken = default)
     {

@@ -15,8 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Zm.Common\Zm.Common.csproj" />
-      <ProjectReference Include="..\Zm.Logging\Zm.Logging.csproj" />
+        <ProjectReference Include="..\Zm.Common\Zm.Common.csproj"/>
+        <ProjectReference Include="..\Zm.Logging\Zm.Logging.csproj"/>
     </ItemGroup>
 
 </Project>

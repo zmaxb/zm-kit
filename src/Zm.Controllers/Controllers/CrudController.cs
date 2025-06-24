@@ -24,15 +24,19 @@ public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdat
     [HttpDelete("{id}")]
     [SwaggerOperation(Summary = "Delete an item by ID")]
     public async Task<ActionResult<ApiResponse<int>>> Delete(TKey id)
-        => await ModifiableService.DeleteAsync(id) is var deletedCount and > 0
+    {
+        return await ModifiableService.DeleteAsync(id) is var deletedCount and > 0
             ? Ok(ApiResponse<int>.Ok(deletedCount, "Successfully deleted"))
             : NotFound(ApiResponse<string>.Fail("Not found"));
+    }
 
 
     [HttpPut("{id}")]
     [SwaggerOperation(Summary = "Update an existing item")]
     public async Task<ActionResult<ApiResponse<bool>>> Update(TKey id, [FromBody] TUpdateDto dto)
-        => await ModifiableService.UpdateAsync(dto, id)
+    {
+        return await ModifiableService.UpdateAsync(dto, id)
             ? Ok(ApiResponse<bool>.Ok(true, "Successfully updated"))
             : NotFound(ApiResponse<bool>.Fail("Not found"));
+    }
 }

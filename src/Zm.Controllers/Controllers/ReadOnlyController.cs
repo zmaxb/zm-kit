@@ -12,17 +12,18 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
     IReadOnlyService<TEntity, TKey, TReadDto> service)
     : ControllerBase
 {
-    protected IReadOnlyService<TEntity, TKey, TReadDto> ReadOnlyService { get; } = service;
-
     private Func<string, Expression<Func<TEntity, bool>>>? _searchBuilder;
     private Func<string?, bool, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>>? _sortBuilder;
+    protected IReadOnlyService<TEntity, TKey, TReadDto> ReadOnlyService { get; } = service;
 
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Retrieve item by ID")]
     public async Task<ActionResult<ApiResponse<TReadDto>>> GetById(TKey id)
-        => await ReadOnlyService.GetByIdAsync(id) is { } item
+    {
+        return await ReadOnlyService.GetByIdAsync(id) is { } item
             ? Ok(ApiResponse<TReadDto>.Ok(item))
             : NotFound(ApiResponse<string>.Fail("Not found"));
+    }
 
     [HttpGet("{id}/exists")]
     [SwaggerOperation(Summary = "Check if item exists")]
@@ -45,7 +46,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
             _searchBuilder,
             _sortBuilder
         );
-        
+
         filter = request.Filters.ApplyDynamicFilters(filter);
 
         var (items, totalCount) = await ReadOnlyService.GetPagedAsync(paging, filter, sort);
@@ -59,8 +60,12 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
     }
 
     protected void SetSearchFilterBuilder(Func<string, Expression<Func<TEntity, bool>>> builder)
-        => _searchBuilder = builder;
+    {
+        _searchBuilder = builder;
+    }
 
     protected void SetSortBuilder(Func<string?, bool, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>> builder)
-        => _sortBuilder = builder;
+    {
+        _sortBuilder = builder;
+    }
 }

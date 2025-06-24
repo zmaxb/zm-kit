@@ -9,8 +9,8 @@ namespace Zm.Controllers.Services;
 public abstract class ControllerServiceBase<TEntity, TKey>(IGenericRepository<TEntity, TKey> repository, IMapper mapper)
     where TEntity : class
 {
-    protected readonly IGenericRepository<TEntity, TKey> Repository = repository;
     protected readonly IMapper Mapper = mapper;
+    protected readonly IGenericRepository<TEntity, TKey> Repository = repository;
     protected virtual int MaxPageSize => 200;
 
     protected async Task<(IEnumerable<TDto> Items, int TotalCount)> GetPagedInternalAsync<TDto>(

@@ -91,7 +91,7 @@ public static class PagedQueryBuilder
                 BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
             if (prop == null) return (filter, sort);
-            
+
             var sortParam = Expression.Parameter(typeof(TEntity), "x");
             var body = Expression.Property(sortParam, prop);
             var lambda = Expression.Lambda(body, sortParam);
