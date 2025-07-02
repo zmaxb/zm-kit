@@ -3,27 +3,30 @@ using Zm.Common.Models;
 
 namespace Zm.Common.Interfaces;
 
-// ReSharper disable once TypeParameterCanBeVariant
 public interface IGenericRepository<TEntity, TKey> where TEntity : class
 {
-    Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? filter = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? sort = null);
-
-    Task<(IEnumerable<TEntity> Items, int TotalCount)> GetPagedAsync(PagingParameters paging,
+    Task<IEnumerable<TEntity>> GetAllAsync(
         Expression<Func<TEntity, bool>>? filter = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? sort = null
-    );
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? sort = null,
+        CancellationToken ct = default);
 
-    Task<TEntity?> GetByIdAsync(TKey id);
+    Task<(IEnumerable<TEntity> Items, int TotalCount)> GetPagedAsync(
+        PagingParameters paging,
+        Expression<Func<TEntity, bool>>? filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? sort = null,
+        CancellationToken ct = default);
 
-    Task<bool> CreateAsync(TEntity entity);
-    Task<bool> UpdateAsync(TEntity entity);
-    Task<int> DeleteAsync(TKey id);
+    Task<TEntity?> GetByIdAsync(TKey id, CancellationToken ct = default);
 
-    Task<bool> ExistsAsync(TKey id);
+    Task<bool> CreateAsync(TEntity entity, CancellationToken ct = default);
+    Task<bool> UpdateAsync(TEntity entity, CancellationToken ct = default);
+    Task<int> DeleteAsync(TKey id, CancellationToken ct = default);
+
+    Task<bool> ExistsAsync(TKey id, CancellationToken ct = default);
+
     string GetPrimaryKeyName();
 
-    Task BeginTransactionAsync();
-    Task CommitTransactionAsync();
-    Task RollbackTransactionAsync();
+    Task BeginTransactionAsync(CancellationToken ct = default);
+    Task CommitTransactionAsync(CancellationToken ct = default);
+    Task RollbackTransactionAsync(CancellationToken ct = default);
 }

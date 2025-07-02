@@ -6,6 +6,7 @@ namespace Zm.Controllers.Extensions;
 
 public static class FilterExpressionBuilder
 {
+    // ReSharper disable once MemberCanBePrivate.Global
     public static Expression<Func<T, bool>> Build<T>(Dictionary<string, object> filters)
     {
         var parameter = Expression.Parameter(typeof(T), "x");

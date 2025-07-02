@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Zm.Common.Models;
@@ -6,18 +7,18 @@ using Zm.Controllers.Interfaces;
 namespace Zm.Controllers.Controllers;
 
 public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdateDto>(
-    IReadOnlyService<TEntity, TKey, TReadDto> readOnlyService,
-    IModifiableService<TCreateDto, TUpdateDto, TKey> modifiableService)
-    : ReadOnlyController<TEntity, TKey, TReadDto>(readOnlyService)
+    IEntityReadService<TEntity, TKey, TReadDto> entityReadService,
+    IEntityCrudService<TCreateDto, TUpdateDto, TKey> entityCrudService)
+    : ReadOnlyController<TEntity, TKey, TReadDto>(entityReadService)
     where TEntity : class
 {
-    protected IModifiableService<TCreateDto, TUpdateDto, TKey> ModifiableService { get; } = modifiableService;
+    private IEntityCrudService<TCreateDto, TUpdateDto, TKey> EntityCrudService { get; } = entityCrudService;
 
     [HttpPost]
     [SwaggerOperation(Summary = "Create a new item")]
     public async Task<ActionResult<ApiResponse<TKey>>> Create([FromBody] TCreateDto dto)
     {
-        var id = await ModifiableService.CreateAsync(dto);
+        var id = await EntityCrudService.CreateAsync(dto);
         return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<TKey>.Ok(id, "Successfully created"));
     }
 
@@ -25,7 +26,7 @@ public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdat
     [SwaggerOperation(Summary = "Delete an item by ID")]
     public async Task<ActionResult<ApiResponse<int>>> Delete(TKey id)
     {
-        return await ModifiableService.DeleteAsync(id) is var deletedCount and > 0
+        return await EntityCrudService.DeleteAsync(id) is var deletedCount and > 0
             ? Ok(ApiResponse<int>.Ok(deletedCount, "Successfully deleted"))
             : NotFound(ApiResponse<string>.Fail("Not found"));
     }
@@ -35,7 +36,7 @@ public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdat
     [SwaggerOperation(Summary = "Update an existing item")]
     public async Task<ActionResult<ApiResponse<bool>>> Update(TKey id, [FromBody] TUpdateDto dto)
     {
-        return await ModifiableService.UpdateAsync(dto, id)
+        return await EntityCrudService.UpdateAsync(dto, id)
             ? Ok(ApiResponse<bool>.Ok(true, "Successfully updated"))
             : NotFound(ApiResponse<bool>.Fail("Not found"));
     }

@@ -5,23 +5,22 @@ using Zm.Controllers.Interfaces;
 
 namespace Zm.Controllers.Services;
 
-public class CrudControllerService<TEntity, TCreateDto, TUpdateDto, TKey>
-    : ControllerServiceBase<TEntity, TKey>, IModifiableService<TCreateDto, TUpdateDto, TKey>
+public class EntityCrudService<TEntity, TCreateDto, TUpdateDto, TKey>
+    : BaseEntityService<TEntity, TKey>, IEntityCrudService<TCreateDto, TUpdateDto, TKey>
     where TEntity : class
 {
-    // ReSharper disable once ConvertToPrimaryConstructor
-    public CrudControllerService(IGenericRepository<TEntity, TKey> repository,
-        IMapper mapper) : base(repository, mapper)
+    public EntityCrudService(IGenericRepository<TEntity, TKey> repository, IMapper mapper)
+        : base(repository, mapper)
     {
     }
 
-    public async Task<TKey> CreateAsync(TCreateDto dto)
+    public async Task<TKey> CreateAsync(TCreateDto dto, CancellationToken ct = default)
     {
         var entity = Mapper.SafeMap<TCreateDto, TEntity>(dto)
                      ?? throw new InvalidOperationException(
                          $"Mapping {typeof(TCreateDto).Name} to {typeof(TEntity).Name} failed.");
 
-        await Repository.CreateAsync(entity);
+        await Repository.CreateAsync(entity, ct);
 
         var keyPropertyName = Repository.GetPrimaryKeyName();
         var keyProperty = typeof(TEntity).GetProperty(keyPropertyName)
@@ -35,21 +34,21 @@ public class CrudControllerService<TEntity, TCreateDto, TUpdateDto, TKey>
         return (TKey)keyValue;
     }
 
-    public async Task<bool> UpdateAsync(TUpdateDto dto, TKey id)
+    public async Task<bool> UpdateAsync(TUpdateDto dto, TKey id, CancellationToken ct = default)
     {
-        var entity = await Repository.GetByIdAsync(id);
+        var entity = await Repository.GetByIdAsync(id, ct);
         if (entity == null) return false;
 
         Mapper.Map(dto, entity);
-        return await Repository.UpdateAsync(entity);
+        return await Repository.UpdateAsync(entity, ct);
     }
 
-    public async Task<int> DeleteAsync(TKey id)
+    public async Task<int> DeleteAsync(TKey id, CancellationToken ct = default)
     {
-        return await SoftDeleteAsync(id);
+        return await SoftDeleteAsync(id, ct);
     }
 
-    private async Task<int> SoftDeleteAsync(TKey id)
+    private async Task<int> SoftDeleteAsync(TKey id, CancellationToken ct = default)
     {
         if (!typeof(ISoftDeletableEntity).IsAssignableFrom(typeof(TEntity)))
             throw new NotSupportedException($"{typeof(TEntity).Name} does not support soft deletion.");
@@ -58,6 +57,6 @@ public class CrudControllerService<TEntity, TCreateDto, TUpdateDto, TKey>
             throw new InvalidOperationException(
                 $"Repository does not implement ISoftDeletable for {typeof(TEntity).Name}");
 
-        return await softRepo.SoftDeleteAsync(id);
+        return await softRepo.SoftDeleteAsync(id, ct);
     }
 }

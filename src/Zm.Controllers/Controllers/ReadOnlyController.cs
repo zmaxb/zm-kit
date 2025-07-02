@@ -9,18 +9,18 @@ namespace Zm.Controllers.Controllers;
 
 [ApiController]
 public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
-    IReadOnlyService<TEntity, TKey, TReadDto> service)
+    IEntityReadService<TEntity, TKey, TReadDto> service)
     : ControllerBase
 {
     private Func<string, Expression<Func<TEntity, bool>>>? _searchBuilder;
     private Func<string?, bool, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>>? _sortBuilder;
-    protected IReadOnlyService<TEntity, TKey, TReadDto> ReadOnlyService { get; } = service;
+    public IEntityReadService<TEntity, TKey, TReadDto> EntityReadService { get; } = service;
 
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Retrieve item by ID")]
     public async Task<ActionResult<ApiResponse<TReadDto>>> GetById(TKey id)
     {
-        return await ReadOnlyService.GetByIdAsync(id) is { } item
+        return await EntityReadService.GetByIdAsync(id) is { } item
             ? Ok(ApiResponse<TReadDto>.Ok(item))
             : NotFound(ApiResponse<string>.Fail("Not found"));
     }
@@ -29,7 +29,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
     [SwaggerOperation(Summary = "Check if item exists")]
     public async Task<ActionResult<ApiResponse<bool>>> Exists(TKey id)
     {
-        var exists = await ReadOnlyService.ExistsAsync(id);
+        var exists = await EntityReadService.ExistsAsync(id);
         return exists
             ? Ok(ApiResponse<bool>.Ok(true))
             : NotFound(ApiResponse<bool>.Fail("Not found"));
@@ -49,7 +49,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
 
         filter = request.Filters.ApplyDynamicFilters(filter);
 
-        var (items, totalCount) = await ReadOnlyService.GetPagedAsync(paging, filter, sort);
+        var (items, totalCount) = await EntityReadService.GetPagedAsync(paging, filter, sort);
 
         var paginationInfo = new PaginationInfo<TReadDto>(paging.Page, paging.PageSize, totalCount)
         {
