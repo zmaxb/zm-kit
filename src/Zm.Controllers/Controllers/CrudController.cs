@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Zm.Common.Models;
@@ -16,7 +15,7 @@ public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdat
 
     [HttpPost]
     [SwaggerOperation(Summary = "Create a new item")]
-    public async Task<ActionResult<ApiResponse<TKey>>> Create([FromBody] TCreateDto dto)
+    public virtual async Task<ActionResult<ApiResponse<TKey>>> Create([FromBody] TCreateDto dto)
     {
         var id = await EntityCrudService.CreateAsync(dto);
         return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<TKey>.Ok(id, "Successfully created"));
@@ -24,7 +23,7 @@ public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdat
 
     [HttpDelete("{id}")]
     [SwaggerOperation(Summary = "Delete an item by ID")]
-    public async Task<ActionResult<ApiResponse<int>>> Delete(TKey id)
+    public virtual async Task<ActionResult<ApiResponse<int>>> Delete(TKey id)
     {
         return await EntityCrudService.DeleteAsync(id) is var deletedCount and > 0
             ? Ok(ApiResponse<int>.Ok(deletedCount, "Successfully deleted"))
@@ -34,7 +33,7 @@ public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdat
 
     [HttpPut("{id}")]
     [SwaggerOperation(Summary = "Update an existing item")]
-    public async Task<ActionResult<ApiResponse<bool>>> Update(TKey id, [FromBody] TUpdateDto dto)
+    public virtual async Task<ActionResult<ApiResponse<bool>>> Update(TKey id, [FromBody] TUpdateDto dto)
     {
         return await EntityCrudService.UpdateAsync(dto, id)
             ? Ok(ApiResponse<bool>.Ok(true, "Successfully updated"))

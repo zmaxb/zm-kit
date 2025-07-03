@@ -18,7 +18,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
 
     [HttpGet("{id}")]
     [SwaggerOperation(Summary = "Retrieve item by ID")]
-    public async Task<ActionResult<ApiResponse<TReadDto>>> GetById(TKey id)
+    public virtual async Task<ActionResult<ApiResponse<TReadDto>>> GetById(TKey id)
     {
         return await EntityReadService.GetByIdAsync(id) is { } item
             ? Ok(ApiResponse<TReadDto>.Ok(item))
@@ -27,7 +27,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
 
     [HttpGet("{id}/exists")]
     [SwaggerOperation(Summary = "Check if item exists")]
-    public async Task<ActionResult<ApiResponse<bool>>> Exists(TKey id)
+    public virtual async Task<ActionResult<ApiResponse<bool>>> Exists(TKey id)
     {
         var exists = await EntityReadService.ExistsAsync(id);
         return exists
@@ -37,7 +37,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
 
     [HttpPost("paged")]
     [SwaggerOperation(Summary = "Retrieve items with pagination")]
-    public async Task<ApiResponse<PaginationInfo<TReadDto>>> GetPaged([FromBody] PagedRequest request)
+    public virtual async Task<ApiResponse<PaginationInfo<TReadDto>>> GetPaged([FromBody] PagedRequest request)
     {
         var paging = new PagingParameters(request.Page, request.PageSize);
 
