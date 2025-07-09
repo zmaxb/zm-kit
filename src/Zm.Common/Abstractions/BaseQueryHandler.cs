@@ -17,7 +17,7 @@ public abstract class BaseQueryHandler<TDto, TEntity, TKey, TFilter>(DbContext c
         return query;
     }
 
-    protected virtual IQueryable<TEntity> ApplyFilters(IQueryable<TEntity> query, TFilter? filter)
+    protected virtual IQueryable<TEntity> ApplyFilters(IQueryable<TEntity> query, Dictionary<string, object>? filter)
     {
         return query;
     }
@@ -50,13 +50,13 @@ public abstract class BaseQueryHandler<TDto, TEntity, TKey, TFilter>(DbContext c
         );
     }
 
-    public virtual async Task<PaginationInfo<TDto>> GetPagedAsync(PagedRequest<TFilter> request,
+    public virtual async Task<PaginationInfo<TDto>> GetPagedAsync(PagedRequest request,
         CancellationToken ct = default)
     {
         var query = Query;
 
         query = ApplySearch(query, request.Search);
-        query = ApplyFilters(query, request.Filter);
+        query = ApplyFilters(query, request.Filters);
         query = ApplySorting(query, request.SortBy, request.Descending);
         query = BeforeExecute(query);
 

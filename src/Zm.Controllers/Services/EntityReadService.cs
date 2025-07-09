@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using AutoMapper;
 using Zm.Common.Interfaces;
 using Zm.Common.Models;
@@ -26,16 +25,6 @@ public class EntityReadService<TEntity, TKey, TReadDto>
             : default;
     }
 
-    [Obsolete("Obsolete")]
-    public async Task<(IEnumerable<TReadDto> Items, int TotalCount)> GetPagedAsync(
-        PagingParameters paging,
-        Expression<Func<TEntity, bool>>? filter = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? sort = null,
-        CancellationToken ct = default)
-    {
-        return await GetPagedInternalAsync<TReadDto>(paging, filter, sort, ct);
-    }
-    
     public async Task<(IEnumerable<TReadDto> Items, int TotalCount)> GetPagedAsync(
         PagedRequest request,
         CancellationToken ct = default)
