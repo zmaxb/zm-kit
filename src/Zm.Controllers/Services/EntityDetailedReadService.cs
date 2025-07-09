@@ -11,6 +11,7 @@ public class EntityDetailedReadService<TEntity, TDetailedDto, TKey>
     : BaseEntityService<TEntity, TKey>, IEntityDetailedReadService<TEntity, TDetailedDto, TKey>
     where TEntity : class
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public EntityDetailedReadService(IGenericRepository<TEntity, TKey> repository, IMapper mapper)
         : base(repository, mapper)
     {
@@ -24,6 +25,7 @@ public class EntityDetailedReadService<TEntity, TDetailedDto, TKey>
             : default;
     }
 
+    [Obsolete("Obsolete")]
     public async Task<(IEnumerable<TDetailedDto> Items, int TotalCount)> GetPagedDetailedAsync(
         PagingParameters paging,
         Expression<Func<TEntity, bool>>? filter = null,

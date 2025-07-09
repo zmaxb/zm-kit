@@ -12,14 +12,25 @@ public abstract class BaseQueryHandler<TDto, TEntity, TKey, TFilter>(DbContext c
 
     protected virtual IQueryable<TEntity> Query => ctx.Set<TEntity>().AsQueryable();
 
-    protected virtual IQueryable<TEntity> ApplySearch(IQueryable<TEntity> query, string? search) => query;
+    protected virtual IQueryable<TEntity> ApplySearch(IQueryable<TEntity> query, string? search)
+    {
+        return query;
+    }
 
-    protected virtual IQueryable<TEntity> ApplyFilters(IQueryable<TEntity> query, TFilter? filter) => query;
+    protected virtual IQueryable<TEntity> ApplyFilters(IQueryable<TEntity> query, TFilter? filter)
+    {
+        return query;
+    }
 
     protected virtual IQueryable<TEntity> ApplySorting(IQueryable<TEntity> query, string? sortBy, bool descending)
-        => QueryableSortingHelper.Apply(query, sortBy, descending);
+    {
+        return QueryableSortingHelper.Apply(query, sortBy, descending);
+    }
 
-    protected virtual IQueryable<TEntity> BeforeExecute(IQueryable<TEntity> query) => query;
+    protected virtual IQueryable<TEntity> BeforeExecute(IQueryable<TEntity> query)
+    {
+        return query;
+    }
 
     public virtual async Task<TDto?> GetByIdAsync(TKey id, CancellationToken ct = default)
     {
@@ -57,7 +68,7 @@ public abstract class BaseQueryHandler<TDto, TEntity, TKey, TFilter>(DbContext c
             .ToListAsync(ct);
 
         var dtos = mapper.Map<IReadOnlyList<TDto>>(items);
-        
+
         return new PaginationInfo<TDto>(request.Page, request.PageSize, total, dtos);
     }
 }

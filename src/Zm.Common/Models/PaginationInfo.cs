@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 
+namespace Zm.Common.Models;
+
 public readonly struct PaginationInfo<T>(int page, int pageSize, int totalCount, IReadOnlyList<T> items)
 {
     [JsonPropertyOrder(1)] public int Page { get; init; } = page;

@@ -9,6 +9,7 @@ public class EntityCrudService<TEntity, TCreateDto, TUpdateDto, TKey>
     : BaseEntityService<TEntity, TKey>, IEntityCrudService<TCreateDto, TUpdateDto, TKey>
     where TEntity : class
 {
+    // ReSharper disable once ConvertToPrimaryConstructor
     public EntityCrudService(IGenericRepository<TEntity, TKey> repository, IMapper mapper)
         : base(repository, mapper)
     {

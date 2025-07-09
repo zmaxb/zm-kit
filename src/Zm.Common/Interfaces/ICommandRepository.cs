@@ -1,6 +1,6 @@
 namespace Zm.Common.Interfaces;
 
-public interface 
+public interface
     ICommandRepository<in TEntity, TKey> where TEntity : class
 {
     Task<TKey> CreateAsync(TEntity entity, CancellationToken ct = default);

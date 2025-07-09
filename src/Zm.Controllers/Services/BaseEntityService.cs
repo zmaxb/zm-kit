@@ -13,6 +13,7 @@ public abstract class BaseEntityService<TEntity, TKey>(IGenericRepository<TEntit
     protected readonly IGenericRepository<TEntity, TKey> Repository = repository;
     protected virtual int MaxPageSize => 200;
 
+    [Obsolete("Obsolete")]
     protected async Task<(IEnumerable<TDto> Items, int TotalCount)> GetPagedInternalAsync<TDto>(
         PagingParameters paging,
         Expression<Func<TEntity, bool>>? filter = null,
@@ -21,6 +22,15 @@ public abstract class BaseEntityService<TEntity, TKey>(IGenericRepository<TEntit
     {
         var safePaging = new PagingParameters(paging.Page, Math.Clamp(paging.PageSize, 1, MaxPageSize));
         var (entities, totalCount) = await Repository.GetPagedAsync(safePaging, filter, sort, ct);
+        var mappedEntities = Mapper.SafeMapList<TEntity, TDto>(entities) ?? [];
+        return (mappedEntities, totalCount);
+    }
+
+    protected async Task<(IEnumerable<TDto> Items, int TotalCount)> GetPagedInternalAsync<TDto>(
+        PagedRequest request,
+        CancellationToken ct = default)
+    {
+        var (entities, totalCount) = await Repository.GetPagedAsync(request, ct);
         var mappedEntities = Mapper.SafeMapList<TEntity, TDto>(entities) ?? [];
         return (mappedEntities, totalCount);
     }

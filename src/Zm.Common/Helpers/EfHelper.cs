@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using Microsoft.EntityFrameworkCore;
 
 namespace Zm.Common.Helpers;
 
@@ -13,7 +13,8 @@ public static class EfHelper
         return PrimaryKeyCache.GetOrAdd(typeof(TEntity), _ =>
         {
             var entityType = ctx.Model.FindEntityType(typeof(TEntity))
-                             ?? throw new InvalidOperationException($"Entity {typeof(TEntity).Name} not found in model");
+                             ?? throw new InvalidOperationException(
+                                 $"Entity {typeof(TEntity).Name} not found in model");
 
             var pk = entityType.FindPrimaryKey()
                      ?? throw new InvalidOperationException($"Entity {typeof(TEntity).Name} has no primary key");
