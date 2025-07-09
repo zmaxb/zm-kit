@@ -51,10 +51,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
 
         var (items, totalCount) = await EntityReadService.GetPagedAsync(paging, filter, sort);
 
-        var paginationInfo = new PaginationInfo<TReadDto>(paging.Page, paging.PageSize, totalCount)
-        {
-            Items = items.ToList()
-        };
+        var paginationInfo = new PaginationInfo<TReadDto>(paging.Page, paging.PageSize, totalCount, items.ToList());
 
         return ApiResponse<PaginationInfo<TReadDto>>.Ok(paginationInfo);
     }

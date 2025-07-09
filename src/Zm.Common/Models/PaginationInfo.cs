@@ -1,8 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Zm.Common.Models;
-
-public readonly struct PaginationInfo<T>(int page, int pageSize, int totalCount)
+public readonly struct PaginationInfo<T>(int page, int pageSize, int totalCount, IReadOnlyList<T> items)
 {
     [JsonPropertyOrder(1)] public int Page { get; init; } = page;
     [JsonPropertyOrder(2)] public int PageSize { get; init; } = pageSize;
@@ -13,5 +11,5 @@ public readonly struct PaginationInfo<T>(int page, int pageSize, int totalCount)
         ? (int)Math.Ceiling((double)totalCount / pageSize)
         : 0;
 
-    [JsonPropertyOrder(5)] public IEnumerable<T> Items { get; init; } = [];
+    [JsonPropertyOrder(5)] public IReadOnlyList<T> Items { get; init; } = items;
 }

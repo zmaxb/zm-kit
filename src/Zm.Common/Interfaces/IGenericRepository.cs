@@ -3,7 +3,7 @@ using Zm.Common.Models;
 
 namespace Zm.Common.Interfaces;
 
-public interface IGenericRepository<TEntity, TKey> where TEntity : class
+public interface IGenericRepository<TEntity, in TKey> where TEntity : class
 {
     Task<IEnumerable<TEntity>> GetAllAsync(
         Expression<Func<TEntity, bool>>? filter = null,
