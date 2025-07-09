@@ -1,5 +1,6 @@
 using AutoMapper;
 using Zm.Common.Interfaces;
+using Zm.Controllers.Abstractions;
 using Zm.Controllers.Extensions;
 using Zm.Controllers.Interfaces;
 

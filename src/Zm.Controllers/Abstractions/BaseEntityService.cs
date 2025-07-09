@@ -4,7 +4,7 @@ using Zm.Common.Interfaces;
 using Zm.Common.Models;
 using Zm.Controllers.Extensions;
 
-namespace Zm.Controllers.Services;
+namespace Zm.Controllers.Abstractions;
 
 public abstract class BaseEntityService<TEntity, TKey>(IGenericRepository<TEntity, TKey> repository, IMapper mapper)
     where TEntity : class

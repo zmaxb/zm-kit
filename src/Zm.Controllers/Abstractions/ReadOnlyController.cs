@@ -5,7 +5,7 @@ using Zm.Common.Models;
 using Zm.Controllers.Extensions;
 using Zm.Controllers.Interfaces;
 
-namespace Zm.Controllers.Controllers;
+namespace Zm.Controllers.Abstractions;
 
 [ApiController]
 public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
@@ -14,6 +14,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
 {
     private Func<string, Expression<Func<TEntity, bool>>>? _searchBuilder;
     private Func<string?, bool, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>>? _sortBuilder;
+    // ReSharper disable once MemberCanBePrivate.Global
     public IEntityReadService<TEntity, TKey, TReadDto> EntityReadService { get; } = service;
 
     [HttpGet("{id}")]
@@ -36,7 +37,8 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
     }
 
     [HttpPost("paged")]
-    [SwaggerOperation(Summary = "Retrieve items with pagination")]
+    [SwaggerOperation(Summary = "Get paginated list of items")]
+    [Obsolete("Obsolete")]
     public virtual async Task<ApiResponse<PaginationInfo<TReadDto>>> GetPaged([FromBody] PagedRequest request)
     {
         var paging = new PagingParameters(request.Page, request.PageSize);
@@ -53,6 +55,16 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
 
         var paginationInfo = new PaginationInfo<TReadDto>(paging.Page, paging.PageSize, totalCount, items.ToList());
 
+        return ApiResponse<PaginationInfo<TReadDto>>.Ok(paginationInfo);
+    }
+
+    [HttpGet]
+    [SwaggerOperation(Summary = "Get paginated list of items")]
+    public virtual async Task<ActionResult<ApiResponse<PaginationInfo<TReadDto>>>> GetPagedNew(
+        [FromQuery] PagedRequest request)
+    {
+        var (items, total) = await EntityReadService.GetPagedAsync(request);
+        var paginationInfo = new PaginationInfo<TReadDto>(request.Page, request.PageSize, total, items.ToList());
         return ApiResponse<PaginationInfo<TReadDto>>.Ok(paginationInfo);
     }
 

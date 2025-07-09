@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.Annotations;
 using Zm.Common.Models;
 using Zm.Controllers.Interfaces;
 
-namespace Zm.Controllers.Controllers;
+namespace Zm.Controllers.Abstractions;
 
 public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdateDto>(
     IEntityReadService<TEntity, TKey, TReadDto> entityReadService,
@@ -18,7 +18,7 @@ public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdat
     public virtual async Task<ActionResult<ApiResponse<TKey>>> Create([FromBody] TCreateDto dto)
     {
         var id = await EntityCrudService.CreateAsync(dto);
-        return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<TKey>.Ok(id, "Successfully created"));
+        return CreatedAtAction(nameof(GetById), new { id }, ApiResponse<TKey>.Ok(id));
     }
 
     [HttpDelete("{id}")]
@@ -26,8 +26,8 @@ public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdat
     public virtual async Task<ActionResult<ApiResponse<int>>> Delete(TKey id)
     {
         return await EntityCrudService.DeleteAsync(id) is var deletedCount and > 0
-            ? Ok(ApiResponse<int>.Ok(deletedCount, "Successfully deleted"))
-            : NotFound(ApiResponse<string>.Fail("Not found"));
+            ? Ok(ApiResponse<int>.Ok(deletedCount))
+            : NotFound(ApiResponse<string>.Fail());
     }
 
 
@@ -36,7 +36,7 @@ public abstract class CrudController<TEntity, TKey, TReadDto, TCreateDto, TUpdat
     public virtual async Task<ActionResult<ApiResponse<bool>>> Update(TKey id, [FromBody] TUpdateDto dto)
     {
         return await EntityCrudService.UpdateAsync(dto, id)
-            ? Ok(ApiResponse<bool>.Ok(true, "Successfully updated"))
-            : NotFound(ApiResponse<bool>.Fail("Not found"));
+            ? Ok(ApiResponse<bool>.Ok(true))
+            : NotFound(ApiResponse<bool>.Fail());
     }
 }

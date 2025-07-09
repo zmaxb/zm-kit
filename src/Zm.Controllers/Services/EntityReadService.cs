@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using AutoMapper;
 using Zm.Common.Interfaces;
 using Zm.Common.Models;
+using Zm.Controllers.Abstractions;
 using Zm.Controllers.Extensions;
 using Zm.Controllers.Interfaces;
 
@@ -33,6 +34,13 @@ public class EntityReadService<TEntity, TKey, TReadDto>
         CancellationToken ct = default)
     {
         return await GetPagedInternalAsync<TReadDto>(paging, filter, sort, ct);
+    }
+    
+    public async Task<(IEnumerable<TReadDto> Items, int TotalCount)> GetPagedAsync(
+        PagedRequest request,
+        CancellationToken ct = default)
+    {
+        return await GetPagedInternalAsync<TReadDto>(request, ct);
     }
 
     public virtual async Task<bool> ExistsAsync(TKey id, CancellationToken ct = default)
