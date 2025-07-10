@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Zm.Common.Models;
@@ -37,7 +36,7 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
     [HttpGet]
     [SwaggerOperation(Summary = "Get paginated list of items")]
     public virtual async Task<ActionResult<ApiResponse<PaginationInfo<TReadDto>>>> GetPaged(
-        [FromQuery] PagedRequest request)
+        [FromBody] PagedRequest request)
     {
         var (items, total) = await EntityReadService.GetPagedAsync(request);
         var paginationInfo = new PaginationInfo<TReadDto>(request.Page, request.PageSize, total, items.ToList());
