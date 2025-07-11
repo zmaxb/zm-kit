@@ -33,7 +33,6 @@ public abstract class ReadOnlyController<TEntity, TKey, TReadDto>(
     }
 
     [HttpPost("paged")]
-    [HttpGet]
     [SwaggerOperation(Summary = "Get paginated list of items")]
     public virtual async Task<ActionResult<ApiResponse<PaginationInfo<TReadDto>>>> GetPaged(
         [FromBody] PagedRequest request)
